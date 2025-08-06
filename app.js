@@ -1,5 +1,9 @@
 import express from "express";
 const app = express();
+
+//this is the middleware. this middleware tells Express to parse JSON request bodies
+app.use(express.json());
+
 export default app;
 
 import employees from "#db/employees";
