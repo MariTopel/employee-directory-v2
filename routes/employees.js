@@ -17,6 +17,12 @@ router.get("/", (req, res) => {
   res.send(employees);
 });
 
+// GET /employees/random → return one random employee
+router.get("/random", (req, res) => {
+  const randomIndex = Math.floor(Math.random() * employees.length);
+  res.send(employees[randomIndex]);
+});
+
 //define the GET by ID router
 //":id" captires whatever is after /employees/ as req.params.id
 //this converts it to a number and searches the array
@@ -28,5 +34,32 @@ router.get("/:id", (req, res) => {
   res.send(employee);
 });
 
-//allos app.js to import and mounth this router under the /employees path
+// POST /employees → add a new employee
+router.post("/", (req, res) => {
+  if (!req.body) {
+    // No JSON body was parsed → respond 400
+    return res.status(400).send("Name is required");
+  }
+
+  const { name } = req.body;
+
+  // 1) Body must be present and name must be a non-empty string
+  if (typeof name !== "string" || !name.trim()) {
+    return res.status(400).send("Name is required");
+  }
+
+  // 2) Create the new employee
+  const newEmployee = {
+    id: employees.length + 1, // simple unique ID
+    name: name.trim(),
+  };
+
+  // 3) Add to our in-memory array
+  employees.push(newEmployee);
+
+  // 4) Respond with 201 and the new record
+  res.status(201).send(newEmployee);
+});
+
+//allows app.js to import and mounth this router under the /employees path
 export default router;
